@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Solar Explorer VR</title>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@7.0.0/dist/aframe-extras.min.js"></script>
+  <style>
+    body { margin: 0; background: #000; overflow: hidden; }
+  </style>
+</head>
+<body>
+  <a-scene background="color: #000011" xr-mode-ui="enabled: true">
+
+    <!-- Enhanced Starfield -->
+    <a-entity geometry="primitive: sphere; radius: 1200" 
+              material="shader: flat; side: back; color: #112233; 
+              src: https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/sprites/stars.png">
+    </a-entity>
+
+    <!-- Additional twinkling stars (particles) -->
+    <a-entity particle-system="preset: stars; particleCount: 800; size: 3; 
+              color: #ffffff; opacity: 0.9; velocity: 0 0 0"></a-entity>
+
+    <!-- Sun -->
+    <a-entity id="sun" position="0 0 0" 
+              geometry="primitive: sphere; radius: 8" 
+              material="color: #ffdd44; emissive: #ffaa00; emissiveIntensity: 1.3"
+              light="type: point; color: #ffeedd; intensity: 2; distance: 800">
+      <a-animation attribute="rotation" to="0 360 0" dur="30000" repeat="indefinite" easing="linear"></a-animation>
+    </a-entity>
+
+    <!-- Solar System -->
+    <a-entity id="solar-system">
+
+      <!-- Mercury -->
+      <a-entity id="mercury" class="planet clickable" position="28 0 0" 
+                geometry="primitive: sphere; radius: 1.2"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mercury_in_color_-_Prockter07_cropped.jpg/1024px-Mercury_in_color_-_Prockter07_cropped.jpg; roughness: 1">
+        <a-animation attribute="rotation" to="0 360 0" dur="8000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Venus -->
+      <a-entity id="venus" class="planet clickable" position="42 0 0" 
+                geometry="primitive: sphere; radius: 2.1"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Venus_globe.jpg/1024px-Venus_globe.jpg; roughness: 0.95">
+        <a-animation attribute="rotation" to="0 360 0" dur="20000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Earth -->
+      <a-entity id="earth" class="planet clickable" position="58 0 0" 
+                geometry="primitive: sphere; radius: 2.3"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/The_Blue_Marble_%28remastered%29.jpg/1024px-The_Blue_Marble_%28remastered%29.jpg; roughness: 0.85">
+        <a-animation attribute="rotation" to="0 360 0" dur="12000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Mars -->
+      <a-entity id="mars" class="planet clickable" position="78 0 0" 
+                geometry="primitive: sphere; radius: 1.7"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/OSIRIS_Mars_true_color.jpg/1024px-OSIRIS_Mars_true_color.jpg; roughness: 0.9">
+        <a-animation attribute="rotation" to="0 360 0" dur="14000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Jupiter -->
+      <a-entity id="jupiter" class="planet clickable" position="115 0 0" 
+                geometry="primitive: sphere; radius: 5.2"
+                material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Jupiter_and_its_shrunken_Great_Red_Spot.jpg/1024px-Jupiter_and_its_shrunken_Great_Red_Spot.jpg; roughness: 0.9">
+        <a-animation attribute="rotation" to="0 360 0" dur="10000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Saturn -->
+      <a-entity id="saturn" class="planet clickable" position="170 0 0">
+        <a-entity geometry="primitive: sphere; radius: 4.2" 
+                  material="src: https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Saturn_during_Equinox.jpg/1024px-Saturn_during_Equinox.jpg; roughness: 0.9">
+          <a-animation attribute="rotation" to="0 360 0" dur="11000" repeat="indefinite"></a-animation>
+        </a-entity>
+        <!-- Rings -->
+        <a-entity geometry="primitive: torus; radius: 6.5; tube: 1; radialSegments: 48" 
+                  material="color: #e0d4b8; side: double; transparent: true; opacity: 0.75"
+                  rotation="75 0 0"></a-entity>
+      </a-entity>
+
+      <!-- Uranus -->
+      <a-entity id="uranus" class="planet clickable" position="220 0 0" 
+                geometry="primitive: sphere; radius: 3.5"
+                material="color: #aaddff; roughness: 0.8; metalness: 0.2">
+        <a-animation attribute="rotation" to="0 360 0" dur="15000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+      <!-- Neptune -->
+      <a-entity id="neptune" class="planet clickable" position="260 0 0" 
+                geometry="primitive: sphere; radius: 3.4"
+                material="color: #4466ff; roughness: 0.85">
+        <a-animation attribute="rotation" to="0 360 0" dur="16000" repeat="indefinite"></a-animation>
+      </a-entity>
+
+    </a-entity>
+
+    <!-- Player -->
+    <a-entity id="rig" position="0 10 140" movement-controls="speed: 30; fly: true">
+      <a-camera></a-camera>
+      
+      <!-- Right Controller - Laser -->
+      <a-entity id="right-hand" 
+                laser-controls="hand: right" 
+                raycaster="objects: .clickable; far: 500; interval: 50"
+                line="color: #44ff88; opacity: 0.85; lineWidth: 6">
+      </a-entity>
+
+      <!-- Left Controller - Teleport -->
+      <a-entity laser-controls="hand: left" 
+                teleport-controls="button: trigger; type: parabolic"></a-entity>
+    </a-entity>
+
+    <!-- Info Panel -->
+    <a-entity id="info-panel" visible="false" position="0 4 -5" scale="2.8 2.8 2.8" look-at="#rig">
+      <a-plane width="4" height="3" color="#0a1a2a" opacity="0.92"></a-plane>
+      <a-text id="info-title" value="" color="#ffdd88" position="0 1 0.1" align="center" width="3.6"></a-text>
+      <a-text id="info-text" value="" color="#bbddff" position="0 0 0.1" align="center" width="3.4"></a-text>
+    </a-entity>
+
+    <script>
+      const panel = document.getElementById('info-panel');
+      const title = document.getElementById('info-title');
+      const textEl = document.getElementById('info-text');
+
+      const planetData = {
+        mercury: { name: "Mercury", fact: "Smallest planet\nClosest to the Sun\nExtreme temperature swings" },
+        venus:   { name: "Venus",   fact: "Hottest planet\nThick toxic atmosphere\nRotates backwards" },
+        earth:   { name: "Earth",   fact: "Our home\n71% water\nOnly known planet with life" },
+        mars:    { name: "Mars",    fact: "The Red Planet\nOlympus Mons - tallest mountain in Solar System" },
+        jupiter: { name: "Jupiter", fact: "Largest planet\nGreat Red Spot storm\nStrong magnetic field" },
+        saturn:  { name: "Saturn",  fact: "Most beautiful rings\nLeast dense planet\nMany moons" },
+        uranus:  { name: "Uranus",  fact: "Ice giant\nRotates on its side\nFaint rings" },
+        neptune: { name: "Neptune", fact: "Strongest winds in Solar System\nDeep blue color" }
+      };
+
+      // Improved click handling
+      function showInfo(planet) {
+        const data = planetData[planet.id];
+        if (!data) return;
+
+        title.setAttribute('value', data.name);
+        textEl.setAttribute('value', data.fact);
+        panel.setAttribute('visible', true);
+
+        setTimeout(() => panel.setAttribute('visible', false), 14000);
+      }
+
+      // Add click listeners
+      document.querySelectorAll('.clickable').forEach(planet => {
+        planet.addEventListener('click', () => showInfo(planet));
+        planet.addEventListener('raycaster-intersected', () => {
+          planet.setAttribute('material', 'emissive', '#4488ff');
+        });
+        planet.addEventListener('raycaster-intersected-cleared', () => {
+          planet.setAttribute('material', 'emissive', '#000000');
+        });
+      });
+
+      console.log("✅ Solar Explorer VR loaded - Laser should now work");
+    </script>
+  </a-scene>
+</body>
+</html>
